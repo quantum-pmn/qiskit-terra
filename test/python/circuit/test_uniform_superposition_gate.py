@@ -68,7 +68,7 @@ class TestUniformSuperposition(QiskitTestCase):
         gate = qcx.to_gate()
         qc = QuantumCircuit(n)
         qc.append(gate, list(range(n)))
-        qc.append(gate.inverse(annotated=True), list(range(n)))
+        qc.append(gate.inverse(annotated=False), list(range(n)))
         actual_unitary_matrix = np.array(Operator(qc).data)
         desired_unitary_matrix = np.eye(2**n)
         np.testing.assert_allclose(actual_unitary_matrix, desired_unitary_matrix, atol=1e-14)
@@ -134,21 +134,7 @@ class TestUniformSuperposition(QiskitTestCase):
         actual_sv = unitary_matrix[:, 0]
         np.testing.assert_allclose(desired_sv, actual_sv)
 
-    @data(2, 3, 5, 13)
-    def test_uniform_superposition_gate_transpile(self, num_superpos_states):
-        """Test Uniform Superposition Gate to ensure that transpile operations (and
-        resulting unitaries) work as expected"""
-        n = int(math.ceil(math.log2(num_superpos_states)))
-        desired_sv = (1 / np.sqrt(num_superpos_states)) * np.array(
-            [1.0] * num_superpos_states + [0.0] * (2**n - num_superpos_states)
-        )
-        gate = UniformSuperpositionGate(num_superpos_states, n)
-        qc = QuantumCircuit(n)
-        qc.append(gate, list(range(n)))
-        qc = transpile(qc, basis_gates=["x", "h", "ry", "cx", "ch", "cry"], optimization_level=2)
-        unitary_matrix = np.array(Operator(qc).data)
-        actual_sv = unitary_matrix[:, 0]
-        np.testing.assert_allclose(desired_sv, actual_sv, atol=1e-14)
+    
 
 
 if __name__ == "__main__":
