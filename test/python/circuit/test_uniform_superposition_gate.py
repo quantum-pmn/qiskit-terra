@@ -54,11 +54,27 @@ class TestUniformSuperposition(QiskitTestCase):
         gate = UniformSuperpositionGate(num_superpos_states, n)
         qc = QuantumCircuit(n)
         qc.append(gate, list(range(n)))
-        qc.append(gate.inverse(annotated=False), list(range(n)))
+        qc.append(gate.inverse(annotated=True), list(range(n)))
         actual_unitary_matrix = np.array(Operator(qc).data)
         desired_unitary_matrix = np.eye(2**n)
         np.testing.assert_allclose(desired_unitary_matrix, actual_unitary_matrix, atol=1e-14)
 
+    @data(4)
+    def test_inverse_uniform_superposition_CX_gate(self, num_superpos_states):
+        """Test Inverse Uniform Superposition Gate"""
+        n = int(math.ceil(math.log2(num_superpos_states)))
+        qcx = QuantumCircuit(n)
+        qcx.cx(0,1)
+        gate = qcx.to_gate()
+        qc = QuantumCircuit(n)
+        qc.append(gate, list(range(n)))
+        qc.append(gate.inverse(annotated=True), list(range(n)))
+        actual_unitary_matrix = np.array(Operator(qc).data)
+        desired_unitary_matrix = np.eye(2**n)
+        np.testing.assert_allclose(actual_unitary_matrix, desired_unitary_matrix, atol=1e-14)
+
+
+        
     @data(-2, -1, 0, 1)
     def test_incompatible_num_superpos_states(self, num_superpos_states):
         """Test error raised if num_superpos_states not valid"""
@@ -129,7 +145,7 @@ class TestUniformSuperposition(QiskitTestCase):
         gate = UniformSuperpositionGate(num_superpos_states, n)
         qc = QuantumCircuit(n)
         qc.append(gate, list(range(n)))
-        qc = transpile(qc, basis_gates=["x", "h", "ry", "cx", "ch", "cry"], optimization_level=3)
+        qc = transpile(qc, basis_gates=["x", "h", "ry", "cx", "ch", "cry"], optimization_level=2)
         unitary_matrix = np.array(Operator(qc).data)
         actual_sv = unitary_matrix[:, 0]
         np.testing.assert_allclose(desired_sv, actual_sv, atol=1e-14)
