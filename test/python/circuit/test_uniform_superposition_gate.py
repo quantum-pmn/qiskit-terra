@@ -54,7 +54,7 @@ class TestUniformSuperposition(QiskitTestCase):
         gate = UniformSuperpositionGate(num_superpos_states, n)
         qc = QuantumCircuit(n)
         qc.append(gate, list(range(n)))
-        qc.append(gate.inverse(), list(range(n)))
+        qc.append(gate.inverse(annotated=False), list(range(n)))
         actual_unitary_matrix = np.array(Operator(qc).data)
         desired_unitary_matrix = np.eye(2**n)
         np.testing.assert_allclose(desired_unitary_matrix, actual_unitary_matrix, atol=1e-14)
