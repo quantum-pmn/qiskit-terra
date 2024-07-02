@@ -25,5 +25,3 @@ jobs:
           pip install tox
       - name: Run lint check
         run: tox -elint-incr
-             black --check -diff /home/runner/work/qiskit-terra/qiskit-terra/qiskit/circuit/library/data_preparation/state_preparation.py
-             black --check -diff /home/runner/work/qiskit-terra/qiskit-terra/test/python/circuit/test_uniform_superposition_gate.py
